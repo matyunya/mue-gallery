@@ -25,6 +25,7 @@
         :style="imagesStyle"
         @mousedown="onCarouselMouseDown"
         @touchstart="onCarouselTouchStart"
+        @mouseover="onCarouselMouseMove"
       >
         <template v-for="i in total">
           <div
@@ -317,7 +318,7 @@ export default {
       this.windowHeight = this.embed ? this.$el.clientHeight : window.innerHeight;
     },
     onMouseMove(e) {
-      if (this.carouselDragStart.x) {
+      if (this.carouselDragStart.x || this.isZoomed) {
         this.onCarouselMouseMove(e);
       }
     },
@@ -399,7 +400,11 @@ export default {
     &.changing,
     &.zoomed {
       .mue-gallery__images {
-        transition: none !important;
+        transition: scale !important;
+      }
+
+      &:hover {
+        transform: scale(2);
       }
     }
 
