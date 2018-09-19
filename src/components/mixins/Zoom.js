@@ -5,7 +5,7 @@ export default {
         return;
       }
 
-      this.isZoomed = !this.isZoomed && this.isImageZoomable(this.active);
+      this.isZoomed = !this.isZoomed;
 
       if (!this.isZoomed) {
         return;
@@ -20,9 +20,6 @@ export default {
         this.carouselZoomOffset.y += y;
         this.correctZoomedImageOffset();
       }
-    },
-    isImageZoomable(i) {
-      return this.items[i].width >= this.windowWidth || this.items[i].height >= this.windowHeight;
     },
     setZoomedImageOffset() {
       this.carouselZoomOffset = this.isZoomed ? this.getZoomedImageOffset(this.active) : null;
