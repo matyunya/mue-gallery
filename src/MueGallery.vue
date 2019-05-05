@@ -29,7 +29,7 @@
       >
         <template v-for="i in total">
           <div
-            :key="'img' + i"
+            :key="'img' + i + (items[i] ? items[i].src : '')"
             :style="imageItemStyle(i)"
             class="mue-gallery__image"
           >
@@ -254,10 +254,26 @@ export default {
 
       setTimeout(onAfterTimeout, 10);
     },
+    async asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    },
+    async onLoad(img, i) {
+      return new Promise((resolve) => {
+        img.onload = () => {
+          this.onImageLoaded(i, img);
+          this.$set(this.items[i], 'loaded', true);
+          resolve();
+        };
+      });
+    },
     setItems() {
-      this.items = [];
+      this.items = this.images.map(i => ({
+        src: noPhoto,
+      }));
 
-      this.images.forEach((image, i) => {
+      this.asyncForEach(this.images, async (image, i) => {
         this.items[i] = {
           src: image.src || image,
           thumb: image.thumb || null,
@@ -271,27 +287,27 @@ export default {
 
         img.src = image.src || image;
 
-        img.onload = () => {
-          this.omImageLoad(i, img);
-          this.$set(this.items[i], 'loaded', true);
-        };
+        await this.onLoad(img, i);
 
         img.onerror = () => {
           const noImg = new Image();
           noImg.src = noPhoto;
           noImg.onload = () => {
-            this.omImageLoad(i, noImg, true);
+            this.onImageLoaded(i, noImg, true);
           };
         };
       });
     },
-    omImageLoad(i, img, isNoImg) {
+    onImageLoaded(i, img, isNoImg = false) {
       if (isNoImg) {
         this.$set(this.items[i], 'src', img.src);
         this.$set(this.items[i], 'thumb', img.src);
       }
-      this.$set(this.items[i], 'width', img.width);
-      this.$set(this.items[i], 'height', img.height);
+
+      if (!isNoImg) {
+        this.$set(this.items[i], 'width', img.width);
+        this.$set(this.items[i], 'height', img.height);
+      }
       this.onWindowResize();
     },
     goTo(i) {
