@@ -299,10 +299,8 @@ export default {
       });
     },
     onImageLoaded(i, img, isNoImg = false) {
-      if (isNoImg) {
-        this.$set(this.items[i], 'src', img.src);
-        this.$set(this.items[i], 'thumb', img.src);
-      }
+      this.$set(this.items[i], 'src', img.src);
+      this.$set(this.items[i], 'thumb', img.src);
 
       if (!isNoImg) {
         this.$set(this.items[i], 'width', img.width);
