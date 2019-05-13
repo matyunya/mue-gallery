@@ -269,7 +269,7 @@ export default {
       });
     },
     setItems() {
-      this.items = this.images.map(i => ({
+      this.items = this.images.map(() => ({
         src: noPhoto,
       }));
 
@@ -299,6 +299,8 @@ export default {
       });
     },
     onImageLoaded(i, img, isNoImg = false) {
+      if (!img) return;
+
       this.$set(this.items[i], 'src', img.src);
       this.$set(this.items[i], 'thumb', img.src);
 
