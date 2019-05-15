@@ -18,6 +18,7 @@
 
     <div
       :style="carouselStyle"
+      :key="rerendered"
       class="mue-gallery__carousel"
     >
       <div
@@ -162,6 +163,8 @@ export default {
       isDragging: false,
       isDragStop: false,
       dragStopTimeout: null,
+
+      rerendered: 0,
     };
   },
 
@@ -262,8 +265,8 @@ export default {
     async onLoad(img, i) {
       return new Promise((resolve) => {
         img.onload = () => {
-          this.onImageLoaded(i, img);
           this.$set(this.items[i], 'loaded', true);
+          this.onImageLoaded(i, img);
           resolve();
         };
       });
@@ -308,6 +311,9 @@ export default {
         this.$set(this.items[i], 'width', img.width);
         this.$set(this.items[i], 'height', img.height);
       }
+
+      this.rerendered += 1;
+
       this.onWindowResize();
     },
     goTo(i) {
